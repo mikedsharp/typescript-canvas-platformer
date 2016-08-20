@@ -1,3 +1,6 @@
+import {MainMenuState} from './states/mainMenuState';
+import {StateSystem} from "./states/stateSystem";
+
 export class GameEngine {
 
   private canvas:HTMLCanvasElement;
@@ -7,41 +10,40 @@ export class GameEngine {
   private dt;
   private last;
 
+  private stateManager:StateSystem;
+
   constructor(){
     console.log('entered constructor of engine');
     this.canvas = <HTMLCanvasElement>document.getElementById('game-canvas');
     this.ctx = this.canvas.getContext('2d');
+    this.stateManager = new StateSystem();
+    this.init();
   }
-
-  update = (dt:number) =>{
-
-  };
-
-  render =(dt:number) =>{
-
-  };
 
   timestamp = (): number => {
       return window.performance && window.performance.now ? window.performance.now() : new Date().getTime();
   };
 
-  gameLoop = (): void =>{
+  updateDelta = () : number => {
     this.now = this.timestamp();
-    this.dt = (this.now - this.last);
-    this.update(this.dt);
-    this.render(this.dt);
+    let delta =  Math.min(1,(this.now - this.last)/1000);
     this.last = this.now;
+    return delta;
+  };
 
+  gameLoop = (): void =>{
+    this.dt = this.updateDelta();
+    this.stateManager.getCurrentState().update(this.dt);
+    this.stateManager.getCurrentState().render(this.dt, this.canvas,this.ctx);
     window.requestAnimationFrame(this.gameLoop);
   };
 
   init():void{
     this.last = this.timestamp();
-    //let happyTurquoise = "rgba(0,255,255,0.5)";
+    this.stateManager.addState(new MainMenuState(this.stateManager));
     console.log('initiating game...');
-    //this.ctx.fillStyle = happyTurquoise;
-    //this.ctx.fillRect(100, 200, 64, 64);
-
+    this.stateManager.setCurrentState("STATE_MAIN_MENU");
+    this.stateManager.getCurrentState().enter();
     window.requestAnimationFrame(this.gameLoop);
   }
 

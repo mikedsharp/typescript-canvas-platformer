@@ -11,9 +11,9 @@ import {GameEngine} from './game/gameEngine';
 export class AppComponent implements OnInit{
 
   engineInstance:GameEngine;
+  title = "";
 
   ngOnInit():any{
     this.engineInstance = new GameEngine();
-    this.engineInstance.init();
   }
 }
