@@ -16,6 +16,7 @@ export class MainMenuState implements AbstractState{
   public receiveMessages = (messages:Object):void => {
     // the state gets to decide how to process the messages, maybe it could be used to
     // update scores and other visuals
+    console.log(messages);
   };
 
   public init = ():void => {
@@ -38,7 +39,7 @@ export class MainMenuState implements AbstractState{
 
     if (event.which == keys.KEY_RETURN) {
       this.stateManager.addState(new LevelZeroState(this.stateManager));
-      this.stateManager.transitionTo('STATE_LEVEL_0', true, {})
+      this.stateManager.transitionTo('STATE_LEVEL_0', true, {name: "mike"})
     }
 
   };

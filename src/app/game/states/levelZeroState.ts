@@ -16,6 +16,7 @@ export class LevelZeroState implements AbstractState{
   public receiveMessages = (messages:Object):void => {
     // the state gets to decide how to process the messages, maybe it could be used to
     // update scores and other visuals
+    console.log(messages);
   };
 
   public init = ():void => {
@@ -37,7 +38,7 @@ export class LevelZeroState implements AbstractState{
 
     if (event.which == keys.KEY_Q) {
       this.stateManager.addState(new MainMenuState(this.stateManager));
-      this.stateManager.transitionTo('STATE_MAIN_MENU', true, {})
+      this.stateManager.transitionTo('STATE_MAIN_MENU', true, {score: 44})
     }
   };
 
