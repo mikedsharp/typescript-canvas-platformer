@@ -9,6 +9,7 @@ import {RenderSystem} from "../systems/render";
 import {UserInputSystem} from "../systems/userInput";
 import {VelocityComponent} from "../components/velocityComponent";
 import {InputStateComponent} from "../components/inputStateComponent";
+import {AnimationComponent} from "../components/animationComponent";
 
 export class LevelZeroState implements AbstractState{
 
@@ -43,6 +44,7 @@ export class LevelZeroState implements AbstractState{
     this.player.addComponent(new VelocityComponent());
     this.player.addComponent(new SpriteComponent());
     this.player.addComponent(new InputStateComponent());
+    this.player.addComponent(new AnimationComponent());
 
     this.player.components['position'].x = 10;
     this.player.components['position'].y = 20;
@@ -55,6 +57,10 @@ export class LevelZeroState implements AbstractState{
 
     this.player.components['sprite'].image = new Image();
     this.player.components['sprite'].image.src = '/app/game/assets/images/player.png';
+
+    this.player.components['animation'].currentFrame = 0;
+    this.player.components['animation'].animationType = 0;
+    this.player.components['animation'].frameCount = 4;
 
     // enable event listeners
     window.addEventListener('keypress', this.handleKeypress);
@@ -83,7 +89,7 @@ export class LevelZeroState implements AbstractState{
     ctx.font = "60px arial";
     ctx.fillText("Level Zero", 260,240,720);
 
-    RenderSystem.invoke([this.player], ctx);
+    RenderSystem.invoke([this.player], ctx, dt);
   };
 
   public exit = ():void  =>{

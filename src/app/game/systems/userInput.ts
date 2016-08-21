@@ -1,6 +1,8 @@
 import {PositionComponent} from '../components/positionComponent';
 import {VelocityComponent} from '../components/velocityComponent';
 import {InputStateComponent} from '../components/inputStateComponent';
+import {AnimationComponent} from '../components/animationComponent';
+import {PlayerAnimationTypes} from '../enums/playerAnimationTypes';
 import {Entity} from "../entities/entity";
 
 export class UserInputSystem {
@@ -8,11 +10,16 @@ export class UserInputSystem {
   static meetsSystemRequisites(entity:Entity):boolean{
     return entity.components['position']
       &&   entity.components['velocity']
+      &&   entity.components['animation']
       &&  entity.components['inputState'];
   }
 
   static init():void{
     //set up various event listeners user will need to control the character
+    for(var keycode in InputStateComponent.keyStates){
+      InputStateComponent.keyStates[keycode] = false;
+    }
+
     window.addEventListener('keydown', UserInputSystem.handleKeydown);
     window.addEventListener('keyup', UserInputSystem.handleKeyup);
   }
@@ -21,21 +28,31 @@ export class UserInputSystem {
 
     var filteredEntities = entities.filter(UserInputSystem.meetsSystemRequisites)
 
-      filteredEntities.forEach(function (entity) {
+    filteredEntities.forEach(function (entity) {
 
-            if(InputStateComponent.keyStates['LEFT']){
-              entity.components.position.x -= entity.components.velocity.x * dt;
-            }
-            if(InputStateComponent.keyStates['RIGHT']){
-              entity.components.position.x += entity.components.velocity.x * dt;
-            }
-            if(InputStateComponent.keyStates['DOWN']){
-              entity.components.position.y += entity.components.velocity.y * dt;
-            }
-            if(InputStateComponent.keyStates['UP']){
-              entity.components.position.y -= entity.components.velocity.y * dt;
-            }
-      });
+      entity.components.animation.animating = true;
+
+      if (InputStateComponent.keyStates['LEFT']) {
+        entity.components.position.x -= entity.components.velocity.x * dt;
+        entity.components.animation.animationType = PlayerAnimationTypes.animations.PLAYER_LEFT;
+      }
+      else if (InputStateComponent.keyStates['RIGHT']) {
+        entity.components.position.x += entity.components.velocity.x * dt;
+        entity.components.animation.animationType = PlayerAnimationTypes.animations.PLAYER_RIGHT;
+      }
+      else if (InputStateComponent.keyStates['DOWN']) {
+        entity.components.position.y += entity.components.velocity.y * dt;
+        entity.components.animation.animationType = PlayerAnimationTypes.animations.PLAYER_DOWN;
+      }
+      else if (InputStateComponent.keyStates['UP']) {
+        entity.components.position.y -= entity.components.velocity.y * dt;
+        entity.components.animation.animationType = PlayerAnimationTypes.animations.PLAYER_UP;
+      } else {
+        entity.components.animation.animating = false;
+      }
+
+
+    });
   }
 
   static destroy():void{
