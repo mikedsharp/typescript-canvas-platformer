@@ -32,7 +32,7 @@ export class MainMenuState implements AbstractState{
 
   };
 
-  private handleKeypress = (event) => {
+  private handleKeypress = (event):void => {
     let keys = {
       'KEY_RETURN': 13
     };
@@ -41,7 +41,6 @@ export class MainMenuState implements AbstractState{
       this.stateManager.addState(new LevelZeroState(this.stateManager));
       this.stateManager.transitionTo('STATE_LEVEL_0', true, {name: "mike"})
     }
-
   };
 
   public update = (dt:number):void => {
