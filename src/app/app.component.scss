@@ -1,0 +1,25 @@
+* {
+ box-sizing: border-box;
+}
+
+body{
+  margin: 0;
+  height: 100vh;
+  display:flex;
+  justify-content: center;
+  align-content: center;
+}
+
+app-root{
+  display: flex;
+}
+
+.app-container{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#game-canvas{
+  border: solid black 3px;
+}
