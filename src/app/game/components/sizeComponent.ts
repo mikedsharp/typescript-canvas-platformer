@@ -1,5 +1,5 @@
 import {Component} from "./component";
-export class Size implements Component{
+export class SizeComponent implements Component{
   name:string;
   width:number;
   height:number;

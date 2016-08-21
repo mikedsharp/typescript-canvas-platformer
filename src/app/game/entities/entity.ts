@@ -8,8 +8,7 @@ export class Entity {
     this.id = this.guid();
   }
 
-  // guid generator
-  private guid = () => {
+  private guid = ():string => {
 
     function s4() {
       return Math.floor((1 + Math.random()) * 0x10000)
@@ -21,7 +20,7 @@ export class Entity {
       s4() + '-' + s4() + s4() + s4();
   };
 
-  public addComponent = (component) =>{
+  public addComponent = (component:Component):Component =>{
     this.components[component.name] = component;
     return this.components[component.name];
   };
@@ -30,7 +29,7 @@ export class Entity {
     delete this.components[componentName];
   };
 
-  public serialize = () => {
+  public serialize = ():string => {
     return JSON.stringify(this, null, 4);
   }
 }

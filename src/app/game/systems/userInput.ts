@@ -1,70 +1,50 @@
-import {Position} from '../components/position';
+import {PositionComponent} from '../components/positionComponent';
+import {VelocityComponent} from '../components/velocityComponent';
+import {InputStateComponent} from '../components/inputStateComponent';
 import {Entity} from "../entities/entity";
 
 export class UserInputSystem {
 
-  static messageQueue = [];
-
   static meetsSystemRequisites(entity:Entity):boolean{
-    return entity.components['position'];
+    return entity.components['position']
+      &&   entity.components['velocity']
+      &&  entity.components['inputState'];
   }
 
-  static init(){
+  static init():void{
     //set up various event listeners user will need to control the character
-    window.addEventListener('keydown', UserInputSystem.handleKeypress);
+    window.addEventListener('keydown', UserInputSystem.handleKeydown);
+    window.addEventListener('keyup', UserInputSystem.handleKeyup);
   }
 
   static update(entities, dt:number):void {
 
     var filteredEntities = entities.filter(UserInputSystem.meetsSystemRequisites)
-    var currentMessage = null;
 
-    var keys = {
-      LEFT: 37,
-      RIGHT: 39,
-      DOWN: 40,
-      UP: 38
-    };
-
-    while(currentMessage = UserInputSystem.messageQueue.shift()){
       filteredEntities.forEach(function (entity) {
-        console.log('processing input for entity: ' + entity['id']);
 
-        if(currentMessage.key == 'playerMove'){
-          switch(currentMessage.value){
-            case keys.LEFT:{
-              entity.components.position.x -= 200 * dt;
-              break;
+            if(InputStateComponent.keyStates['LEFT']){
+              entity.components.position.x -= entity.components.velocity.x * dt;
             }
-            case keys.RIGHT:{
-              entity.components.position.x += 200 * dt;
-              break;
+            if(InputStateComponent.keyStates['RIGHT']){
+              entity.components.position.x += entity.components.velocity.x * dt;
             }
-            case keys.DOWN:{
-              entity.components.position.y += 200 * dt;
-              break;
+            if(InputStateComponent.keyStates['DOWN']){
+              entity.components.position.y += entity.components.velocity.y * dt;
             }
-            case keys.UP:{
-              entity.components.position.y -= 200 * dt;
-              break;
+            if(InputStateComponent.keyStates['UP']){
+              entity.components.position.y -= entity.components.velocity.y * dt;
             }
-            default:break;
-          }
-        }
       });
-
-
-    }
-
-
   }
 
-  static destroy(){
+  static destroy():void{
     //remover listeners, this will happen if the user changes state, or component is removed
-    window.removeEventListener('keydown', UserInputSystem.handleKeypress);
+    window.removeEventListener('keydown', UserInputSystem.handleKeydown);
+    window.removeEventListener('keyup', UserInputSystem.handleKeyup);
   }
 
-  static handleKeypress(event) {
+  static handleKeydown(event):void {
     let keys = {
       LEFT: 37,
       RIGHT: 39,
@@ -72,16 +52,54 @@ export class UserInputSystem {
       UP: 38
     };
 
-    if(event.which == keys.LEFT
-      || event.which == keys.RIGHT
-      || event.which == keys.DOWN
-      || event.which == keys.UP ){
-
-      UserInputSystem.messageQueue.push({
-        key: 'playerMove',
-        value: event.which
-      })
+    switch(event.which){
+      case keys.LEFT:{
+        InputStateComponent.keyStates['LEFT'] = true;
+        break;
+      }
+      case keys.RIGHT:{
+        InputStateComponent.keyStates['RIGHT'] = true;
+        break;
+      }
+      case keys.DOWN:{
+        InputStateComponent.keyStates['DOWN'] = true;
+        break;
+      }
+      case keys.UP:{
+        InputStateComponent.keyStates['UP'] = true;
+        break;
+      }
     }
+
+  };
+  static handleKeyup(event):void {
+    let keys = {
+      LEFT: 37,
+      RIGHT: 39,
+      DOWN: 40,
+      UP: 38
+    };
+
+    switch(event.which){
+      case keys.LEFT:{
+        InputStateComponent.keyStates['LEFT'] = false;
+        break;
+      }
+      case keys.RIGHT:{
+        InputStateComponent.keyStates['RIGHT'] = false;
+        break;
+      }
+      case keys.DOWN:{
+        InputStateComponent.keyStates['DOWN'] = false;
+        break;
+      }
+      case keys.UP:{
+        InputStateComponent.keyStates['UP'] = false;
+        break;
+      }
+    }
+
+
 
   };
 }

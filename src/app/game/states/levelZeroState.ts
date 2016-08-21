@@ -2,11 +2,13 @@ import {AbstractState} from './abstractState';
 import {StateSystem} from "./stateSystem";
 import {MainMenuState} from "./mainMenuState";
 import {Entity} from "../entities/entity";
-import {Size} from "../components/size";
-import {Sprite} from "../components/sprite";
-import {Position} from "../components/position";
+import {SizeComponent} from "../components/sizeComponent";
+import {SpriteComponent} from "../components/spriteComponent";
+import {PositionComponent} from "../components/positionComponent";
 import {RenderSystem} from "../systems/render";
 import {UserInputSystem} from "../systems/userInput";
+import {VelocityComponent} from "../components/velocityComponent";
+import {InputStateComponent} from "../components/inputStateComponent";
 
 export class LevelZeroState implements AbstractState{
 
@@ -36,9 +38,11 @@ export class LevelZeroState implements AbstractState{
 
     this.player = new Entity();
 
-    this.player.addComponent(new Position());
-    this.player.addComponent(new Size());
-    this.player.addComponent(new Sprite());
+    this.player.addComponent(new PositionComponent());
+    this.player.addComponent(new SizeComponent());
+    this.player.addComponent(new VelocityComponent());
+    this.player.addComponent(new SpriteComponent());
+    this.player.addComponent(new InputStateComponent());
 
     this.player.components['position'].x = 10;
     this.player.components['position'].y = 20;
@@ -46,21 +50,18 @@ export class LevelZeroState implements AbstractState{
     this.player.components['size'].width = 64;
     this.player.components['size'].height = 64;
 
+    this.player.components['velocity'].x = 200;
+    this.player.components['velocity'].y = 300;
+
     this.player.components['sprite'].image = new Image();
     this.player.components['sprite'].image.src = '/app/game/assets/images/player.png';
-
-
-    for(var i = 0; i < 25; i++){
-      this.entities.push(new Entity());
-    }
 
     // enable event listeners
     window.addEventListener('keypress', this.handleKeypress);
     UserInputSystem.init();
-
   };
 
-  private handleKeypress = (event) => {
+  private handleKeypress = (event):void => {
     let keys = {
       'KEY_Q': 113
     };
