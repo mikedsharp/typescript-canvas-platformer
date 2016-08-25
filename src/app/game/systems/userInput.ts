@@ -34,19 +34,19 @@ export class UserInputSystem {
 
       if (InputStateComponent.keyStates['LEFT']) {
         entity.components.position.x -= entity.components.velocity.x * dt;
-        entity.components.animation.animationType = PlayerAnimationTypes.animations.PLAYER_LEFT;
+        entity.components.animation.animationType = PlayerAnimationTypes.PLAYER_LEFT;
       }
       else if (InputStateComponent.keyStates['RIGHT']) {
         entity.components.position.x += entity.components.velocity.x * dt;
-        entity.components.animation.animationType = PlayerAnimationTypes.animations.PLAYER_RIGHT;
+        entity.components.animation.animationType = PlayerAnimationTypes.PLAYER_RIGHT;
       }
       else if (InputStateComponent.keyStates['DOWN']) {
         entity.components.position.y += entity.components.velocity.y * dt;
-        entity.components.animation.animationType = PlayerAnimationTypes.animations.PLAYER_DOWN;
+        entity.components.animation.animationType = PlayerAnimationTypes.PLAYER_DOWN;
       }
       else if (InputStateComponent.keyStates['UP']) {
         entity.components.position.y -= entity.components.velocity.y * dt;
-        entity.components.animation.animationType = PlayerAnimationTypes.animations.PLAYER_UP;
+        entity.components.animation.animationType = PlayerAnimationTypes.PLAYER_UP;
       } else {
         entity.components.animation.animating = false;
       }
